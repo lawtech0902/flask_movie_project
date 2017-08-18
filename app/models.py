@@ -5,16 +5,8 @@ __date__ = '2017/8/13 下午9:24'
 """
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
-import pymysql
-
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:123@127.0.0.1:3306/movie"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
-
-db = SQLAlchemy(app)
+from app import db
 
 
 class User(db.Model):
@@ -166,7 +158,7 @@ class Role(db.Model):
     auths = db.Column(db.String(600))  # 角色权限列表
     addtime = db.Column(db.DateTime, index=True,
                         default=datetime.now)  # 添加时间
-    admins = db.relationship("Admin", backref='role') # 管理员外键关系关联
+    admins = db.relationship("Admin", backref='role')  # 管理员外键关系关联
 
     def __repr__(self):
         return "<Role %r>" % self.name
@@ -189,6 +181,10 @@ class Admin(db.Model):
 
     def __repr__(self):
         return "<Admin %r>" % self.name
+
+    def check_pwd(self, pwd):
+        from werkzeug.security import check_password_hash
+        return check_password_hash(self.pwd, pwd)
 
 
 class Adminlog(db.Model):
@@ -219,20 +215,20 @@ class Oplog(db.Model):
     def __repr__(self):
         return "<Oplog %r>" % self.id
 
-if __name__ == '__main__':
-    # db.create_all()
-    # role = Role(
-    #     name="超级管理员",
-    #     auths=""
-    # )
-    # db.session.add(role)
-    # db.session.commit()
-    from werkzeug.security import generate_password_hash
-    admin = Admin(
-        name="imoocmovie1",
-        pwd = generate_password_hash("imoocmovie1"),
-        is_super=0,
-        role_id = 1
-    )
-    db.session.add(admin)
-    db.session.commit()
+        # if __name__ == '__main__':
+        #     # db.create_all()
+        #     # role = Role(
+        #     #     name="超级管理员",
+        #     #     auths=""
+        #     # )
+        #     # db.session.add(role)
+        #     # db.session.commit()
+        #     from werkzeug.security import generate_password_hash
+        #     admin = Admin(
+        #         name="imoocmovie1",
+        #         pwd = generate_password_hash("imoocmovie1"),
+        #         is_super=0,
+        #         role_id = 1
+        #     )
+        #     db.session.add(admin)
+        #     db.session.commit()
