@@ -6,7 +6,7 @@
         <h1>微电影管理系统</h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> 预告管理</a></li>
-            <li class="active">添加预告</li>
+            <li class="active">修改预告</li>
         </ol>
     </section>
     <section class="content" id="showcontent">
@@ -14,7 +14,7 @@
             <div class="col-md-12">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title">添加预告</h3>
+                        <h3 class="box-title">修改预告</h3>
                     </div>
                     <form role="form" method="post" enctype="multipart/form-data">
                         <div class="box-body">
@@ -23,6 +23,14 @@
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
                                     </button>
                                     <h4><i class="icon fa fa-check"></i> 操作成功</h4>
+                                    {{ msg }}
+                                </div>
+                            {% endfor %}
+                            {% for msg in get_flashed_messages(category_filter=['err']) %}
+                                <div class="alert alert-danger alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                    </button>
+                                    <h4><i class="icon fa fa-ban"></i> 操作失败</h4>
                                     {{ msg }}
                                 </div>
                             {% endfor %}
@@ -43,7 +51,8 @@
                                         <font style="color:red">{{ err }}</font>
                                     </div>
                                 {% endfor %}
-                                <img data-src="holder.js/700x320" style="margin-top:5px;" class="img-responsive"
+                                <img data-src="{{ url_for('static', filename='uploads/' + preview.logo) }}"
+                                     style="margin-top:5px;" class="img-responsive"
                                      alt="">
                             </div>
                         </div>
