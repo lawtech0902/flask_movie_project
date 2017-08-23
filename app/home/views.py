@@ -5,7 +5,13 @@ __date__ = '2017/8/13 下午9:26'
 """
 
 from . import home
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash
+from app.home.forms import RegisterForm
+from app.models import User
+from werkzeug.security import generate_password_hash
+from app import db
+
+import uuid
 
 
 # 会员登录
@@ -21,9 +27,22 @@ def logout():
 
 
 # 会员注册
-@home.route('/regist/')
+@home.route('/regist/', methods=["GET", "POST"])
 def regist():
-    return render_template("home/regist.html")
+    form = RegisterForm()
+    if form.validate_on_submit():
+        data = form.data
+        user = User(
+            name=data["name"],
+            email=data["email"],
+            phone=data["phone"],
+            pwd=generate_password_hash(data["pwd"]),
+            uuid=uuid.uuid4().hex
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash("注册成功！", "ok")
+    return render_template("home/regist.html", form=form)
 
 
 # 会员中心
