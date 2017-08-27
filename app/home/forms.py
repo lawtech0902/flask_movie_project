@@ -5,7 +5,7 @@ __date__ = '2017/8/13 下午9:26'
 """
 
 from flask_wtf import FlaskForm
-from wtforms.fields import SubmitField, StringField, PasswordField
+from wtforms.fields import SubmitField, StringField, PasswordField, TextAreaField, FileField
 from wtforms.validators import DataRequired, Email, EqualTo, Regexp, ValidationError
 from app.models import User
 
@@ -137,5 +137,70 @@ class LoginForm(FlaskForm):
         label="登录",
         render_kw={
             "class": "btn btn-lg btn-primary btn-block",
+        }
+    )
+
+
+class UserdetailForm(FlaskForm):
+    """
+    用户修改资料表单
+    """
+    name = StringField(
+        label="账号",
+        validators=[
+            DataRequired("请输入账号！")
+        ],
+        description="账号",
+        render_kw={
+            "class": "form-control",
+            "placeholder": "请输入账号！",
+        }
+    )
+    email = StringField(
+        label="邮箱",
+        validators=[
+            DataRequired("请输入邮箱！"),
+            Email("邮箱格式不正确！")
+        ],
+        description="邮箱",
+        render_kw={
+            "class": "form-control",
+            "placeholder": "请输入邮箱！",
+        }
+    )
+    phone = StringField(
+        label="手机",
+        validators=[
+            DataRequired("请输入手机！"),
+            Regexp("1[3458]\\d{9}", message="手机格式不正确！")
+        ],
+        description="手机",
+        render_kw={
+            "class": "form-control",
+            "placeholder": "请输入手机！",
+        }
+    )
+    face = FileField(
+        label="头像",
+        validators=[
+            DataRequired("请上传头像！")
+        ],
+        description="头像",
+    )
+    info = TextAreaField(
+        label="简介",
+        validators=[
+            DataRequired("请输入简介！")
+        ],
+        description="简介",
+        render_kw={
+            "class": "form-control",
+            "rows": 10
+        }
+    )
+    submit = SubmitField(
+        label='保存修改',
+        render_kw={
+            "class": "btn btn-success",
         }
     )
