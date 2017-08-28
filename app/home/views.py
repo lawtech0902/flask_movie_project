@@ -7,7 +7,7 @@ __date__ = '2017/8/13 下午9:26'
 from . import home
 from flask import render_template, redirect, url_for, flash, session, request
 from app.home.forms import RegisterForm, LoginForm, UserdetailForm, PwdForm
-from app.models import User, Userlog
+from app.models import User, Userlog, Preview
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 from app import db, app
@@ -27,6 +27,12 @@ def user_login_req(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
+
+# 首页
+@home.route('/')
+def index():
+    return render_template("home/index.html")
 
 
 # 会员登录
@@ -146,13 +152,6 @@ def pwd():
     return render_template("home/pwd.html", form=form)
 
 
-# 评论
-@home.route('/comments/')
-@user_login_req
-def comments():
-    return render_template("home/comments.html")
-
-
 # 登录日志
 @home.route('/loginlog/<int:page>/', methods=["GET"])
 @user_login_req
@@ -167,6 +166,13 @@ def loginlog(page=None):
     return render_template("home/loginlog.html", page_data=page_data)
 
 
+# 评论
+@home.route('/comments/')
+@user_login_req
+def comments():
+    return render_template("home/comments.html")
+
+
 # 收藏电影
 @home.route('/moviecol/')
 @user_login_req
@@ -174,16 +180,11 @@ def moviecol():
     return render_template("home/moviecol.html")
 
 
-# 首页
-@home.route('/')
-def index():
-    return render_template("home/index.html")
-
-
-# 电影列表
+# 上映预告
 @home.route('/animation/')
 def animation():
-    return render_template("home/animation.html")
+    data = Preview.query.all()
+    return render_template("home/animation.html", data=data)
 
 
 # 电影搜索
