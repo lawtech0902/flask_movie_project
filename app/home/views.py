@@ -154,10 +154,17 @@ def comments():
 
 
 # 登录日志
-@home.route('/loginlog/')
+@home.route('/loginlog/<int:page>/', methods=["GET"])
 @user_login_req
-def loginlog():
-    return render_template("home/loginlog.html")
+def loginlog(page=None):
+    if page is None:
+        page = 1
+    page_data = Userlog.query.filter_by(
+        user_id=int(session["user_id"])
+    ).order_by(
+        Userlog.addtime.desc()
+    ).paginate(page=page, per_page=10)
+    return render_template("home/loginlog.html", page_data=page_data)
 
 
 # 收藏电影
